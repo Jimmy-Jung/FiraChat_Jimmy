@@ -209,6 +209,6 @@ final class RegistView: UIView {
             make.bottom.equalTo(stackView.snp.top).offset(-20)
             make.height.width.equalTo(textViewHeight * 4)
         }
-        profileImgButton.layer.cornerRadius = textViewHeight * 2
+        profileImgButton.layer.cornerRadius = textViewHeight * 1.5
     }
 }
