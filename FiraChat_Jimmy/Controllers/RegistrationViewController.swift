@@ -8,11 +8,12 @@
 import UIKit
 import SnapKit
 import FirebaseAuth
+import JGProgressHUD
 
 class RegistrationViewController: UIViewController {
 
     let registView = RegistView()
-    
+    private let spinner = JGProgressHUD(style: .dark)
     override func loadView() {
         view = registView
     }
@@ -82,8 +83,15 @@ class RegistrationViewController: UIViewController {
             registView.passwordInfoLabel.shake()
             return
         }
+        spinner.show(in: view)
         
-        Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+        Auth.auth().createUser(withEmail: email, password: password) { [weak self] authResult, error in
+            guard let self = self else {return}
+            
+            DispatchQueue.main.async {
+                self.spinner.dismiss()
+            }
+            
             if let e = error {
                 print(e)
             } else {

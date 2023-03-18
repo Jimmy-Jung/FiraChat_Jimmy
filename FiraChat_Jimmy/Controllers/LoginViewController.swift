@@ -8,11 +8,14 @@
 import UIKit
 import FirebaseAuth
 import SnapKit
+import JGProgressHUD
 
 final class LoginViewController: UIViewController{
     
     private let loginView = LoginView()
     let registVC = RegistrationViewController()
+    private let spinner = JGProgressHUD(style: .dark)
+    
     override func loadView() {
         view = loginView
     }
@@ -77,9 +80,16 @@ final class LoginViewController: UIViewController{
             loginView.passwordInfoLabel.shake()
             return
         }
+        spinner.show(in: view)
         
+        //파이어베이스 로그인
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
             guard let self = self else {return}
+            
+            DispatchQueue.main.async {
+                self.spinner.dismiss()
+            }
+            
             if let error = error as NSError? {
                     // 로그인 실패
                     print(error.localizedDescription)

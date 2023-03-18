@@ -12,7 +12,6 @@ final class RegistView: UIView {
 
     private let textViewHeight: CGFloat = 48
     
-    
     //로고 이미지
     lazy var profileImgButton: UIImageView = {
         let imageView = UIImageView()
@@ -20,8 +19,8 @@ final class RegistView: UIView {
         imageView.tintColor = .gray
         imageView.contentMode = .scaleAspectFit
         imageView.layer.masksToBounds = true
-        imageView.layer.borderWidth = 2
-        imageView.layer.borderColor = UIColor.lightGray.cgColor
+//        imageView.layer.borderWidth = 2
+//        imageView.layer.borderColor = UIColor.lightGray.cgColor
         return imageView
     }()
     // "이름을 입력하세요" 안내문구
