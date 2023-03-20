@@ -16,7 +16,7 @@ import JGProgressHUD
 class RegistrationViewController: UIViewController {
 
     let registView = RegistView()
-    private let spinner = JGProgressHUD(style: .dark)
+    
     override func loadView() {
         view = registView
     }
@@ -25,9 +25,52 @@ class RegistrationViewController: UIViewController {
         super.viewDidLoad()
         setupDelegate()
         setupAddTarget()
+        hideKeyboard()
+        keyboardSetObserver()
     }
     
-  
+    private func hideKeyboard() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tap)
+    }
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    private func keyboardSetObserver() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil)
+    }
+    
+    @objc func keyboardWillShow() {
+        if view.frame.origin.y == 0 {
+            self.view.frame.origin.y -= 24
+        }
+    }
+    
+    @objc func keyboardWillHide(){
+        if view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
+        }
+    }
+    
+    deinit {
+        // 노티피케이션의 등록 해제 (해제안하면 계속 등록될 수 있음) ⭐️
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+        
+    }
     
     // 셋팅
     private func setupDelegate() {
@@ -91,9 +134,13 @@ class RegistrationViewController: UIViewController {
         guard let profileImage = registView.profileImgButton.image else {return}
         guard let imageData = profileImage.jpegData(compressionQuality: 0.3) else {return}
         
-        spinner.show(in: view)
+        showLoader(true, withText: "회원가입 로딩중")
         //서버에 프로필 저장하기
         AuthAPI.createUser(withEmail: email, password: password, name: name, imageData: imageData) { error in
+            
+            DispatchQueue.main.async {
+                self.showLoader(false)
+            }
             if let error = error {
                 // 회원 가입 실패
                 let alertController = UIAlertController(title: "회원 가입 실패", message: error.localizedDescription, preferredStyle: .alert)

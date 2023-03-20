@@ -41,10 +41,10 @@ struct AuthAPI {
     static func createUser(withEmail email: String, password: String, name: String, imageData: Data, completion: @escaping (Error?) -> Void) {
             // 서버에 프로필 저장하기
             let filename = NSUUID().uuidString
-            let ref = Storage.storage().reference(withPath: "/profile_images/\\(filename)")
+            let ref = Storage.storage().reference(withPath: "/profile_images/\(filename)")
             ref.putData(imageData, metadata: nil) { (meta, error) in
                 if let error = error {
-                    print("DEBUG: Failed to upload image with error\\(error.localizedDescription)")
+                    print("DEBUG: Failed to upload image with error\(error.localizedDescription)")
                     completion(error)
                     return
                 }
@@ -55,8 +55,8 @@ struct AuthAPI {
                     // 계정 만들기
                     Auth.auth().createUser(withEmail: email, password: password) { result, error in
                         if let error = error {
-                            print("DEBUG: Failed to create user with error\\(error.localizedDescription)")
-                            completion(error)
+                            print("DEBUG: Failed to create user with error \(error.localizedDescription)")
+                           completion(error)
                             return
                         }
 
@@ -69,10 +69,10 @@ struct AuthAPI {
 
                         Firestore.firestore().collection("users").document(uid).setData(data) { err in
                             if let err = err {
-                                print("Error adding document: \\(err.localizedDescription)")
+                                print("Error adding document: \(err.localizedDescription)")
                                 completion(err)
                             } else {
-                                print("Document added with ID: \\(uid)")
+                                print("Document added with ID: \(uid)")
                                 completion(nil)
                             }
                         }

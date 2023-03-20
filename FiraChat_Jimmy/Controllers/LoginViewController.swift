@@ -14,7 +14,6 @@ final class LoginViewController: UIViewController{
     
     private let loginView = LoginView()
     let registVC = RegistrationViewController()
-    private let spinner = JGProgressHUD(style: .dark)
     
     override func loadView() {
         view = loginView
@@ -22,10 +21,48 @@ final class LoginViewController: UIViewController{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        hideKeyboard()
+        keyboardSetObserver()
         setupDelegate()
         setupAddTarget()
         autoLogin()
         setupNavigationBar()
+    }
+    
+    private func hideKeyboard() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(
+            target: self,
+            action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tap)
+    }
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+    
+    private func keyboardSetObserver() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil)
+    }
+    
+    @objc func keyboardWillShow() {
+        if view.frame.origin.y == 0 {
+            self.view.frame.origin.y -= 24
+        }
+    }
+    
+    @objc func keyboardWillHide(){
+        if view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
+        }
     }
     //네비게이션바 세팅
     private func setupNavigationBar() {
@@ -82,14 +119,12 @@ final class LoginViewController: UIViewController{
             loginView.passwordInfoLabel.shake()
             return
         }
-        spinner.show(in: view)
-        
+        showLoader(true, withText: "로그인 로딩중")
         //파이어베이스 로그인
-        AuthAPI.logInUser(withEmail: email, password: password) { [weak self] success, message in
-            guard let self = self else {return}
+        AuthAPI.logInUser(withEmail: email, password: password) { success, message in
             
             DispatchQueue.main.async {
-                self.spinner.dismiss()
+                self.showLoader(false)
             }
             if success {
                 self.dismiss(animated: true)
