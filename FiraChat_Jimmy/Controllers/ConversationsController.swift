@@ -6,34 +6,60 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 private let reuseIdentifier = "ConversationCell"
 
-class ConversationsController: UIViewController {
+final class ConversationsController: UIViewController {
     
     private let tableView = UITableView()
     override func viewDidLoad() {
         super.viewDidLoad()
+        authenticateUser()
         configureUI()
 
        
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        if DataManager.loginCheck == false {
-            let vc = LoginViewController()
-            let nav = UINavigationController(rootViewController: vc)
-            nav.modalPresentationStyle = .fullScreen
-            present(nav, animated: false, completion: nil)
+    private func authenticateUser() {
+        if Auth.auth().currentUser?.uid == nil {
+            presentLoginScreen()
+        } else {
+            print("DEBUG: UserID is \(String(describing: Auth.auth().currentUser?.uid))")
         }
     }
-    @objc func showProfile() {
-        print(123)
+    
+    private func presentLoginScreen() {
+        let vc = LoginViewController()
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: false, completion: nil)
     }
     
-    func configureUI() {
+    private func logOut() {
+        do {
+            try Auth.auth().signOut()
+            presentLoginScreen()
+        } catch {
+            print("DEBUG: signing out")
+        }
+        
+    }
+    
+    @objc func showProfile() {
+        let alertController = UIAlertController(title: "로그아웃", message: "로그아웃 하시겠습니까?", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "확인", style: .default) { [weak self]_ in
+            self?.logOut()
+        }
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+        alertController.addAction(okAction)
+        alertController.addAction(cancelAction)
+        self.present(alertController, animated: true, completion: nil)
+        
+        
+    }
+    
+    private func configureUI() {
         view.backgroundColor = .white
         configureNavigationBar()
         configureTableView()
@@ -46,7 +72,7 @@ class ConversationsController: UIViewController {
         
     }
     
-    func configureTableView() {
+    private func configureTableView() {
         tableView.backgroundColor = .white
         tableView.rowHeight = 80
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
@@ -59,7 +85,7 @@ class ConversationsController: UIViewController {
         tableView.frame = view.frame
     }
     
-    func configureNavigationBar() {
+    private func configureNavigationBar() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]

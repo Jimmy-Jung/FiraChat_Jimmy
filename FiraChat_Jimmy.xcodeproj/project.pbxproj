@@ -29,6 +29,7 @@
 		553F209C29C4A6CC009D8DEB /* RegistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 553F209B29C4A6CC009D8DEB /* RegistView.swift */; };
 		553F209E29C4A6E0009D8DEB /* RegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 553F209D29C4A6E0009D8DEB /* RegistrationViewController.swift */; };
 		553F20A029C5A127009D8DEB /* LogicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 553F209F29C5A127009D8DEB /* LogicModel.swift */; };
+		55FCBAE429C84F150080EF45 /* AuthAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FCBAE329C84F150080EF45 /* AuthAPI.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -63,6 +64,7 @@
 		553F209B29C4A6CC009D8DEB /* RegistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistView.swift; sourceTree = "<group>"; };
 		553F209D29C4A6E0009D8DEB /* RegistrationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewController.swift; sourceTree = "<group>"; };
 		553F209F29C5A127009D8DEB /* LogicModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogicModel.swift; sourceTree = "<group>"; };
+		55FCBAE329C84F150080EF45 /* AuthAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAPI.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,8 +110,8 @@
 				552CD60929C4512A007A4997 /* Models */,
 				552CD60829C45128007A4997 /* Views */,
 				552CD60729C45126007A4997 /* ViewModels */,
+				55FCBAE229C84EF10080EF45 /* API */,
 				552CD60629C45124007A4997 /* Controllers */,
-				552CD60529C45122007A4997 /* API */,
 				552CD60429C4511E007A4997 /* Utility */,
 				552CD5F929C45111007A4997 /* Assets.xcassets */,
 				552CD62629C48440007A4997 /* GoogleService-Info.plist */,
@@ -124,13 +126,6 @@
 			children = (
 			);
 			path = Utility;
-			sourceTree = "<group>";
-		};
-		552CD60529C45122007A4997 /* API */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = API;
 			sourceTree = "<group>";
 		};
 		552CD60629C45124007A4997 /* Controllers */ = {
@@ -176,6 +171,15 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		55FCBAE229C84EF10080EF45 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				55FCBAE329C84F150080EF45 /* AuthAPI.swift */,
+			);
+			name = API;
+			path = ViewModels/API;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -270,6 +274,7 @@
 				552CD60D29C453F0007A4997 /* Extensions.swift in Sources */,
 				552CD5EE29C45110007A4997 /* AppDelegate.swift in Sources */,
 				552CD62529C46E40007A4997 /* LoginViewController.swift in Sources */,
+				55FCBAE429C84F150080EF45 /* AuthAPI.swift in Sources */,
 				552CD60B29C451CC007A4997 /* ConversationsController.swift in Sources */,
 				552CD5F829C45110007A4997 /* FiraChat_Jimmy.xcdatamodeld in Sources */,
 				553F209E29C4A6E0009D8DEB /* RegistrationViewController.swift in Sources */,

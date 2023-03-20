@@ -9,7 +9,6 @@ import Foundation
 
 final class DataManager {
     static let shared = DataManager()
-    static var loginCheck = false
     //private var chatBoxArray: [ChatBox] = []
     private init() {
         print("메모리 할당")

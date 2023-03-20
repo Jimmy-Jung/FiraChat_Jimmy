@@ -68,6 +68,7 @@ final class LoginViewController: UIViewController{
         guard
             let email = loginView.emailTextField.text, !email.isEmpty, LogicModel.isValidEmail(testStr: email)
         else {
+            loginView.emailInfoLabel.text = "이메일 양식이 올바르지 않습니다"
             loginView.emailInfoLabel.textColor = .systemRed
             loginView.emailInfoLabel.shake()
             return
@@ -76,6 +77,7 @@ final class LoginViewController: UIViewController{
             let password = loginView.passwordTextField.text, !password.isEmpty,
             LogicModel.isValidPassword(password: password)
         else {
+            loginView.passwordInfoLabel.text = "숫자와 영어 조합 6자리 이상 입력하세요"
             loginView.passwordInfoLabel.textColor = .systemRed
             loginView.passwordInfoLabel.shake()
             return
@@ -83,42 +85,27 @@ final class LoginViewController: UIViewController{
         spinner.show(in: view)
         
         //파이어베이스 로그인
-        Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
+        AuthAPI.logInUser(withEmail: email, password: password) { [weak self] success, message in
             guard let self = self else {return}
             
             DispatchQueue.main.async {
                 self.spinner.dismiss()
             }
-            
-            if let error = error as NSError? {
-                    // 로그인 실패
-                    print(error.localizedDescription)
-                    var message = ""
-                switch error.code {
-                case AuthErrorCode.networkError.rawValue:
-                    message = "인터넷 연결을 확인해주세요."
-                case AuthErrorCode.userNotFound.rawValue:
-                    message = "등록되지 않은 이메일 입니다."
-                case AuthErrorCode.wrongPassword.rawValue:
-                    message = "비밀번호가 올바르지 않습니다."
-                default:
-                    message = "로그인에 실패했습니다."
-                    }
-                    let alertController = UIAlertController(title: "로그인 실패", message: message, preferredStyle: .alert)
-                    let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
-                    alertController.addAction(okAction)
-           
-                    self.present(alertController, animated: true, completion: nil)
-              
-            } else {
-                DataManager.loginCheck = true
+            if success {
                 self.dismiss(animated: true)
-                return
+            } else {
+                let alertController = UIAlertController(title: "로그인 실패", message: message, preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+                alertController.addAction(okAction)
+                
+                self.present(alertController, animated: true, completion: nil)
             }
         }
+        
+        
     }
     
-    // 리셋버튼이 눌리면 동작하는 함수
+    // 회원가입 버튼이 눌리면 동작하는 함수
     @objc func registerBButtonTapped() {
         //만들기
         let alert = UIAlertController(title: "회원가입", message: "계정을 생성하시겠습니까?", preferredStyle: .alert)

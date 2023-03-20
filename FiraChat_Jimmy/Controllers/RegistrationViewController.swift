@@ -93,54 +93,20 @@ class RegistrationViewController: UIViewController {
         
         spinner.show(in: view)
         //서버에 프로필 저장하기
-        let filename = NSUUID().uuidString
-        let ref = Storage.storage().reference(withPath: "/profile_images/\(filename)")
-        ref.putData(imageData, metadata: nil) { (meta, error) in
+        AuthAPI.createUser(withEmail: email, password: password, name: name, imageData: imageData) { error in
             if let error = error {
-                print("DEBUG: Failed to uplead image with error\(error.localizedDescription)")
-                return
-            }
-            
-            ref.downloadURL { (url, error) in
-                guard let profileImageUrl = url?.absoluteString else {return}
-                
-                Auth.auth().createUser(withEmail: email, password: password) { result, error in
-                    
-                    DispatchQueue.main.async {self.spinner.dismiss()}
-                    
-                    if let error = error {
-                        print("DEBUG: Failed to create user with error\(error.localizedDescription)")
-                        return
-                    }
-                    
-                    guard let uid = result?.user.uid else {return}
-                    
-                    let data = ["name": name,
-                                "email": email,
-                                "profileImageUrl": profileImageUrl,
-                                "uid": uid] as[String: Any]
-                    
-                    Firestore.firestore().collection("users").document(uid).setData(data) { err in
-                        if let err = err {
-                            print("Error adding document: \(err.localizedDescription)")
-                        } else {
-                            print("Document added with ID: \(uid)")
-                            DataManager.loginCheck = true
-                            self.dismiss(animated: true)
-                        }
-                        
-                    }
-   
-                }
-                
+                // 회원 가입 실패
+                let alertController = UIAlertController(title: "회원 가입 실패", message: error.localizedDescription, preferredStyle: .alert)
+                let okAction = UIAlertAction(title: "확인", style: .default, handler: nil)
+                alertController.addAction(okAction)
+                self.present(alertController, animated: true, completion: nil)
+            } else {
+                // 회원 가입 성공
+                self.dismiss(animated: true, completion: nil)
             }
         }
-        
-        
-        
-        
     }
-
+    
 }
 
 extension RegistrationViewController: UITextFieldDelegate {
