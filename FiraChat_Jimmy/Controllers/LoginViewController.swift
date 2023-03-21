@@ -35,9 +35,11 @@ final class LoginViewController: UIViewController{
             action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tap)
     }
+    
     @objc func dismissKeyboard() {
         view.endEditing(true)
     }
+     
     
     private func keyboardSetObserver() {
         NotificationCenter.default.addObserver(

@@ -13,6 +13,20 @@ private let reuseIdentifier = "ConversationCell"
 final class ConversationsController: UIViewController {
     
     private let tableView = UITableView()
+    
+    private let newMassageButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "plus"), for: .normal)
+        button.backgroundColor = .systemPurple
+        button.tintColor = .white
+        button.imageView?.snp.makeConstraints { make in
+            make.height.width.equalTo(26)
+        }
+        button.layer.masksToBounds = true
+        button.addTarget(self, action: #selector(showNewMessage), for: .touchUpInside)
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         authenticateUser()
@@ -55,20 +69,32 @@ final class ConversationsController: UIViewController {
         alertController.addAction(okAction)
         alertController.addAction(cancelAction)
         self.present(alertController, animated: true, completion: nil)
-        
-        
+    }
+    
+    @objc func showNewMessage() {
+        let controller = NewMessageController()
+        let nav = UINavigationController(rootViewController: controller)
+//        navigationController?.pushViewController(controller, animated: true)
+        nav.modalTransitionStyle = .coverVertical
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true)
     }
     
     private func configureUI() {
         view.backgroundColor = .white
-        configureNavigationBar()
+        configureNavigationBar(withTitle: "Messages", prefersLargeTitle: true)
         configureTableView()
-        
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = "Messages"
-        
+    
         let image = UIImage(systemName: "person.circle.fill")
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(showProfile))
+        
+        view.addSubview(newMassageButton)
+        newMassageButton.layer.cornerRadius = 56 / 2
+        newMassageButton.snp.makeConstraints { make in
+            make.width.height.equalTo(56)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(16)
+            make.trailing.equalToSuperview().inset(24)
+        }
         
     }
     
@@ -85,22 +111,6 @@ final class ConversationsController: UIViewController {
         tableView.frame = view.frame
     }
     
-    private func configureNavigationBar() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-        appearance.backgroundColor = .systemPurple
-        
-        navigationController?.navigationBar.standardAppearance = appearance
-        navigationController?.navigationBar.compactAppearance = appearance
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
-        
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationController?.title = "Messages"
-        navigationController?.navigationBar.tintColor = .white
-        navigationController?.navigationBar.isTranslucent = true
-        navigationController?.navigationBar.overrideUserInterfaceStyle = .dark
-    }
 
 }
 extension ConversationsController: UITableViewDataSource {
