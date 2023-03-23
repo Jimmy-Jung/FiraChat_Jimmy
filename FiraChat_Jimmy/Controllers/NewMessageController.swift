@@ -9,10 +9,14 @@ import UIKit
 
 private let reuseIdentifier = "UserReuseCell"
 
+protocol NemessageControllerDelegate: class {
+    func controller(_ controller: NewMessageController, wnatsToStartChatWith user: User)
+}
+
 final class NewMessageController: UITableViewController {
     // MARK: - 프로퍼티
     var users = [User]()
-    
+    weak var delegate: NemessageControllerDelegate?
     // MARK: - 라이프사이클
     
     override func viewDidLoad() {
@@ -62,6 +66,10 @@ extension NewMessageController {
         
         return cell
     }
+}
 
-    
+extension NewMessageController {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        delegate?.controller(self, wnatsToStartChatWith: users[indexPath.row])
+    }
 }

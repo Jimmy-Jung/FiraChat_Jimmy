@@ -73,6 +73,7 @@ final class ConversationsController: UIViewController {
     
     @objc func showNewMessage() {
         let controller = NewMessageController()
+        controller.delegate = self
         let nav = UINavigationController(rootViewController: controller)
 //        navigationController?.pushViewController(controller, animated: true)
         nav.modalTransitionStyle = .coverVertical
@@ -133,3 +134,13 @@ extension ConversationsController: UITableViewDelegate {
         print(indexPath.row)
     }
 }
+
+// MARK: - NewMessageControllerDelegate
+extension ConversationsController: NemessageControllerDelegate {
+    func controller(_ controller: NewMessageController, wnatsToStartChatWith user: User) {
+        controller.dismiss(animated: true)
+        let chat = ChatController(user: user)
+        navigationController?.pushViewController(chat, animated: true)
+    }
+}
+

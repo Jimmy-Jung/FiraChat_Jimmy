@@ -33,6 +33,12 @@
 		55B0C4E929C99D8500C38805 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B0C4E829C99D8500C38805 /* User.swift */; };
 		55B0C4EB29C99F7700C38805 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B0C4EA29C99F7700C38805 /* Service.swift */; };
 		55B0C4EE29C9AC5E00C38805 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 55B0C4ED29C9AC5E00C38805 /* SDWebImage */; };
+		55B0C4F029C9B60D00C38805 /* ChatController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B0C4EF29C9B60D00C38805 /* ChatController.swift */; };
+		55B0C4F229CAB67000C38805 /* CustomInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B0C4F129CAB67000C38805 /* CustomInputAccessoryView.swift */; };
+		55B0C4F429CAD2DA00C38805 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B0C4F329CAD2DA00C38805 /* MessageCell.swift */; };
+		55B0C4F729CADA6A00C38805 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B0C4F629CADA6A00C38805 /* Message.swift */; };
+		55B0C4F929CAE10800C38805 /* MessageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B0C4F829CAE10800C38805 /* MessageViewModel.swift */; };
+		55B0C4FB29CC09DF00C38805 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B0C4FA29CC09DF00C38805 /* Constants.swift */; };
 		55FCBAE429C84F150080EF45 /* AuthAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FCBAE329C84F150080EF45 /* AuthAPI.swift */; };
 		55FCBAE629C891DC0080EF45 /* NewMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55FCBAE529C891DC0080EF45 /* NewMessageController.swift */; };
 /* End PBXBuildFile section */
@@ -72,6 +78,12 @@
 		55B0C4E629C981C000C38805 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		55B0C4E829C99D8500C38805 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		55B0C4EA29C99F7700C38805 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
+		55B0C4EF29C9B60D00C38805 /* ChatController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatController.swift; sourceTree = "<group>"; };
+		55B0C4F129CAB67000C38805 /* CustomInputAccessoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomInputAccessoryView.swift; sourceTree = "<group>"; };
+		55B0C4F329CAD2DA00C38805 /* MessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
+		55B0C4F629CADA6A00C38805 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		55B0C4F829CAE10800C38805 /* MessageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageViewModel.swift; sourceTree = "<group>"; };
+		55B0C4FA29CC09DF00C38805 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		55FCBAE329C84F150080EF45 /* AuthAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAPI.swift; sourceTree = "<group>"; };
 		55FCBAE529C891DC0080EF45 /* NewMessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -126,6 +138,7 @@
 				552CD62629C48440007A4997 /* GoogleService-Info.plist */,
 				552CD5FE29C45111007A4997 /* Info.plist */,
 				552CD5F629C45110007A4997 /* FiraChat_Jimmy.xcdatamodeld */,
+				55B0C4FA29CC09DF00C38805 /* Constants.swift */,
 			);
 			path = FiraChat_Jimmy;
 			sourceTree = "<group>";
@@ -145,6 +158,7 @@
 				552CD62429C46E40007A4997 /* LoginViewController.swift */,
 				553F209D29C4A6E0009D8DEB /* RegistrationViewController.swift */,
 				55FCBAE529C891DC0080EF45 /* NewMessageController.swift */,
+				55B0C4EF29C9B60D00C38805 /* ChatController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -152,6 +166,7 @@
 		552CD60729C45126007A4997 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				55B0C4F829CAE10800C38805 /* MessageViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -164,6 +179,8 @@
 				55B0C4E629C981C000C38805 /* UserCell.swift */,
 				552CD5F329C45110007A4997 /* Main.storyboard */,
 				552CD5FB29C45111007A4997 /* LaunchScreen.storyboard */,
+				55B0C4F129CAB67000C38805 /* CustomInputAccessoryView.swift */,
+				55B0C4F329CAD2DA00C38805 /* MessageCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -175,6 +192,7 @@
 				552CD62829C486D7007A4997 /* DataManager.swift */,
 				553F209F29C5A127009D8DEB /* LogicModel.swift */,
 				55B0C4E829C99D8500C38805 /* User.swift */,
+				55B0C4F629CADA6A00C38805 /* Message.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -283,23 +301,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				55B0C4F929CAE10800C38805 /* MessageViewModel.swift in Sources */,
 				553F209C29C4A6CC009D8DEB /* RegistView.swift in Sources */,
+				55B0C4F429CAD2DA00C38805 /* MessageCell.swift in Sources */,
 				552CD5F229C45110007A4997 /* ViewController.swift in Sources */,
 				552CD62329C46E03007A4997 /* LoginView.swift in Sources */,
 				552CD60D29C453F0007A4997 /* Extensions.swift in Sources */,
+				55B0C4FB29CC09DF00C38805 /* Constants.swift in Sources */,
 				55B0C4E929C99D8500C38805 /* User.swift in Sources */,
+				55B0C4F729CADA6A00C38805 /* Message.swift in Sources */,
 				55FCBAE629C891DC0080EF45 /* NewMessageController.swift in Sources */,
 				552CD5EE29C45110007A4997 /* AppDelegate.swift in Sources */,
 				552CD62529C46E40007A4997 /* LoginViewController.swift in Sources */,
 				55FCBAE429C84F150080EF45 /* AuthAPI.swift in Sources */,
 				55B0C4E729C981C000C38805 /* UserCell.swift in Sources */,
 				552CD60B29C451CC007A4997 /* ConversationsController.swift in Sources */,
+				55B0C4F229CAB67000C38805 /* CustomInputAccessoryView.swift in Sources */,
 				55B0C4EB29C99F7700C38805 /* Service.swift in Sources */,
 				552CD5F829C45110007A4997 /* FiraChat_Jimmy.xcdatamodeld in Sources */,
 				553F209E29C4A6E0009D8DEB /* RegistrationViewController.swift in Sources */,
 				552CD62929C486D7007A4997 /* DataManager.swift in Sources */,
 				553F20A029C5A127009D8DEB /* LogicModel.swift in Sources */,
 				552CD5F029C45110007A4997 /* SceneDelegate.swift in Sources */,
+				55B0C4F029C9B60D00C38805 /* ChatController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

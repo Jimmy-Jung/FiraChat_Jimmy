@@ -74,7 +74,7 @@ class UserCell: UITableViewCell {
             make.leading.equalToSuperview().inset(12)
             make.height.width.equalTo(defaultConstraint)
         }
-        profileImageView.layer.cornerRadius = defaultConstraint / 3
+        profileImageView.layer.cornerRadius = defaultConstraint / 3 
         
         stackView.snp.makeConstraints { make in
             make.centerY.equalTo(profileImageView)
