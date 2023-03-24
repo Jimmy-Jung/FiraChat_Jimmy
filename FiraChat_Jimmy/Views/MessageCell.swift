@@ -56,7 +56,7 @@ class MessageCell: UICollectionViewCell {
         bubbleContainer.layer.cornerRadius = 12
         
         bubbleContainer.snp.makeConstraints { make in
-            make.top.equalToSuperview()
+            make.top.bottom.equalToSuperview()
             make.left.equalTo(profileImageView.snp.right).offset(12)
             make.width.lessThanOrEqualTo(250)
         }
@@ -82,18 +82,19 @@ class MessageCell: UICollectionViewCell {
         textView.textColor = viewModel.messageTextColor
         textView.text = message.text
         
+        bubbleContainer.snp.removeConstraints()
+        
         if message.isFromCurrentUser {
             self.profileImageView.isHidden = true
-            
-            bubbleContainer.snp.remakeConstraints { make in
-                make.top.equalToSuperview()
+            bubbleContainer.snp.makeConstraints { make in
+                make.top.bottom.equalToSuperview()
                 make.right.equalToSuperview().inset(12)
                 make.width.lessThanOrEqualTo(250)
             }
         } else {
             self.profileImageView.isHidden = false
-            bubbleContainer.snp.remakeConstraints { make in
-                make.top.equalToSuperview()
+            bubbleContainer.snp.makeConstraints { make in
+                make.top.bottom.equalToSuperview()
                 make.left.equalTo(profileImageView.snp.right).offset(12)
                 make.width.lessThanOrEqualTo(250)
             }

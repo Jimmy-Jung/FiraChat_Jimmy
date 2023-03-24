@@ -129,6 +129,8 @@
 				552CD5ED29C45110007A4997 /* AppDelegate.swift */,
 				552CD5EF29C45110007A4997 /* SceneDelegate.swift */,
 				552CD60C29C453F0007A4997 /* Extensions.swift */,
+				55B0C4FA29CC09DF00C38805 /* Constants.swift */,
+				55FCBAE229C84EF10080EF45 /* API */,
 				552CD60929C4512A007A4997 /* Models */,
 				552CD60829C45128007A4997 /* Views */,
 				552CD60629C45124007A4997 /* Controllers */,
@@ -138,7 +140,6 @@
 				552CD62629C48440007A4997 /* GoogleService-Info.plist */,
 				552CD5FE29C45111007A4997 /* Info.plist */,
 				552CD5F629C45110007A4997 /* FiraChat_Jimmy.xcdatamodeld */,
-				55B0C4FA29CC09DF00C38805 /* Constants.swift */,
 			);
 			path = FiraChat_Jimmy;
 			sourceTree = "<group>";
@@ -188,7 +189,6 @@
 		552CD60929C4512A007A4997 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				55FCBAE229C84EF10080EF45 /* API */,
 				552CD62829C486D7007A4997 /* DataManager.swift */,
 				553F209F29C5A127009D8DEB /* LogicModel.swift */,
 				55B0C4E829C99D8500C38805 /* User.swift */,

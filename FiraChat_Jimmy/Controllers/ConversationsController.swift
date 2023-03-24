@@ -12,7 +12,10 @@ private let reuseIdentifier = "ConversationCell"
 
 final class ConversationsController: UIViewController {
     
+    // MARK: - 프로퍼티
+
     private let tableView = UITableView()
+    private var conversations = [Conversation]()
     
     private let newMassageButton: UIButton = {
         let button = UIButton(type: .system)
@@ -27,12 +30,30 @@ final class ConversationsController: UIViewController {
         return button
     }()
     
+    // MARK: - 생명주기
+
     override func viewDidLoad() {
         super.viewDidLoad()
         authenticateUser()
         configureUI()
+        fetchConversation()
 
        
+    }
+    
+    // MARK: - 메서드
+
+    private func fetchConversation() {
+        print("대화불러오기 메서드 실행")
+        Service.fetchConversations { [weak self] conversations in
+            guard let self = self else {return}
+            self.conversations = conversations
+            print("대화: \(self.conversations)")
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
+           
+        }
     }
     
     private func authenticateUser() {
@@ -57,28 +78,6 @@ final class ConversationsController: UIViewController {
         } catch {
             print("DEBUG: signing out")
         }
-        
-    }
-    
-    @objc func showProfile() {
-        let alertController = UIAlertController(title: "로그아웃", message: "로그아웃 하시겠습니까?", preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "확인", style: .default) { [weak self]_ in
-            self?.logOut()
-        }
-        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
-        alertController.addAction(okAction)
-        alertController.addAction(cancelAction)
-        self.present(alertController, animated: true, completion: nil)
-    }
-    
-    @objc func showNewMessage() {
-        let controller = NewMessageController()
-        controller.delegate = self
-        let nav = UINavigationController(rootViewController: controller)
-//        navigationController?.pushViewController(controller, animated: true)
-        nav.modalTransitionStyle = .coverVertical
-        nav.modalPresentationStyle = .fullScreen
-        present(nav, animated: true)
     }
     
     private func configureUI() {
@@ -111,17 +110,40 @@ final class ConversationsController: UIViewController {
         view.addSubview(tableView)
         tableView.frame = view.frame
     }
+    // MARK: - 셀렉터
+
+    @objc func showProfile() {
+        let alertController = UIAlertController(title: "로그아웃", message: "로그아웃 하시겠습니까?", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "확인", style: .default) { [weak self]_ in
+            self?.logOut()
+        }
+        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
+        alertController.addAction(okAction)
+        alertController.addAction(cancelAction)
+        self.present(alertController, animated: true, completion: nil)
+    }
     
+    @objc func showNewMessage() {
+        let controller = NewMessageController()
+        controller.delegate = self
+        let nav = UINavigationController(rootViewController: controller)
+//        navigationController?.pushViewController(controller, animated: true)
+        nav.modalTransitionStyle = .coverVertical
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true)
+    }
+    
+    // MARK: - 익스텐션
 
 }
 extension ConversationsController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return conversations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
-        cell.textLabel?.text = "Test Cell"
+        cell.textLabel?.text = conversations[indexPath.row].message.text
         
         return cell
     }

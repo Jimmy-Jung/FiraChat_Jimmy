@@ -14,7 +14,6 @@ class ChatController: UICollectionViewController {
 
     private let user: User
     private var messages = [Message]()
-    var fromCurrentUser = false
     //채팅입력 뷰 만들기
     private lazy var customInputView: CustomInputAccessoryView = {
         let iv = CustomInputAccessoryView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 50))
@@ -55,9 +54,19 @@ class ChatController: UICollectionViewController {
     // MARK: - API
     
     func fetchMessages() {
-        Service.fetchMessages(forUser: user) { messages in
+        Service.fetchMessages(forUser: user) { [weak self] messages in
+            guard let self = self else {return}
+            
             self.messages = messages
             self.collectionView.reloadData()
+            print(self.messages.count)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+                self.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: true)
+            }
+            
+            
+            
         }
     }
 
@@ -70,6 +79,7 @@ class ChatController: UICollectionViewController {
         collectionView.backgroundColor = .white
         self.collectionView!.register(MessageCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         collectionView.alwaysBounceVertical = true
+        collectionView.keyboardDismissMode = .interactive
     }
 
 }
@@ -84,6 +94,7 @@ extension ChatController {
         
         cell.message = messages[indexPath.row]
         cell.message?.user = user
+        
         return cell
     }
 }
@@ -94,8 +105,13 @@ extension ChatController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! MessageCell
-        return CGSize(width: view.frame.width, height: 50)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! MessageCell
+        cell.message = messages[indexPath.row]
+        cell.layoutIfNeeded()
+        let targetSize = CGSize(width: view.frame.width, height: 1000)
+        let estimatedSize = cell.systemLayoutSizeFitting(targetSize)
+        
+        return CGSize(width: view.frame.width, height: estimatedSize.height)
     }
 }
 

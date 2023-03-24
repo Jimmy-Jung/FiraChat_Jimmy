@@ -20,3 +20,9 @@ struct User {
         self.uid = dictionary["uid"] as? String ?? ""
     }
 }
+
+struct Conversation {
+    let user: User
+    let message: Message
+//    let profileMessage: 
+}

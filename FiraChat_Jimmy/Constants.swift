@@ -9,3 +9,16 @@ import Foundation
 import FirebaseFirestore
 
 let COLLECION_MESSAGES = Firestore.firestore().collection("messages")
+let COLLECION_USERS = Firestore.firestore().collection("users")
+
+struct K {
+    static let recentMessage = "recentMessage"
+    static let timestamp = "timestamp"
+    static let text = "text"
+    static let fromID = "fromID"
+    static let toID = "toID"
+    
+   
+    
+    init() {}
+}
