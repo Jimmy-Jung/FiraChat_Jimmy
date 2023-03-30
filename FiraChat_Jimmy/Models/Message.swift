@@ -15,13 +15,22 @@ struct Message {
     var timestamp: Timestamp!
     var user: User?
     let isFromCurrentUser: Bool
+    var charPartnerId: String? {
+        return isFromCurrentUser ? toID : fromID
+    }
     
     init(dictionary: [String: Any]) {
-        self.text = dictionary["text"] as? String ?? ""
-        self.toID = dictionary["toID"] as? String ?? ""
-        self.fromID = dictionary["fromID"] as? String ?? ""
-        self.timestamp = dictionary["timestamp"] as? Timestamp ?? Timestamp(date: Date())
+        self.text = dictionary[K.text] as? String ?? ""
+        self.toID = dictionary[K.toID] as? String ?? ""
+        self.fromID = dictionary[K.fromID] as? String ?? ""
+        self.timestamp = dictionary[K.timestamp] as? Timestamp ?? Timestamp(date: Date())
         
         self.isFromCurrentUser = fromID == Auth.auth().currentUser?.uid
     }
+}
+
+struct Conversation {
+    let user: User
+    let message: Message
+//    let profileMessage:
 }

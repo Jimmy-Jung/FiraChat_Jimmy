@@ -21,8 +21,4 @@ struct User {
     }
 }
 
-struct Conversation {
-    let user: User
-    let message: Message
-//    let profileMessage: 
-}
+

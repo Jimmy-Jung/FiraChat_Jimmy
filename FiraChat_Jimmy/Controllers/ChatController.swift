@@ -41,7 +41,7 @@ class ChatController: UICollectionViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        configureNavigationBar(withTitle: user.name, prefersLargeTitle: false)
+        configureNavigationBar(withTitle: user.name, prefersLargeTitles: false)
     }
     
     override var inputAccessoryView: UIView? {
@@ -54,9 +54,10 @@ class ChatController: UICollectionViewController {
     // MARK: - API
     
     func fetchMessages() {
+        showLoader(true)
         Service.fetchMessages(forUser: user) { [weak self] messages in
             guard let self = self else {return}
-            
+            self.showLoader(false)
             self.messages = messages
             self.collectionView.reloadData()
             print(self.messages.count)
@@ -64,9 +65,6 @@ class ChatController: UICollectionViewController {
                 let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
                 self.collectionView.scrollToItem(at: indexPath, at: .bottom, animated: true)
             }
-            
-            
-            
         }
     }
 

@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-protocol CustomInputAccessoryViewDelegate: class {
+protocol CustomInputAccessoryViewDelegate: AnyObject {
     func inputView(_ inputView: CustomInputAccessoryView, wantsToSend message: String)
 }
 
@@ -52,26 +52,33 @@ final class CustomInputAccessoryView: UIView {
         layer.shadowColor = UIColor.lightGray.cgColor
         
         addSubview(sendButton)
-        sendButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(4)
-            make.trailing.equalToSuperview().inset(8)
-            make.height.width.equalTo(50)
-        }
+        sendButton.anchor(top: topAnchor, right: rightAnchor, paddingTop: 4, paddingRight: 8)
+        sendButton.setDimensions(height: 50, width: 50)
+//        sendButton.snp.makeConstraints { make in
+//            make.top.equalToSuperview().inset(4)
+//            make.trailing.equalToSuperview().inset(8)
+//            make.height.width.equalTo(50)
+//        }
         
         addSubview(messageInputTextView)
-        messageInputTextView.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(12)
-            make.leading.equalToSuperview().inset(8)
-            make.trailing.equalTo(sendButton.snp.leading).offset(-8)
-            make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).inset(8)
-           // make.height.greaterThanOrEqualTo(18)
-        }
+        messageInputTextView.anchor(top: topAnchor, left: leftAnchor, bottom: safeAreaLayoutGuide.bottomAnchor, right: sendButton.leftAnchor, paddingTop: 12, paddingLeft: 4, paddingBottom: 8, paddingRight: 8)
+        
+        
+//        messageInputTextView.snp.makeConstraints { make in
+//            make.top.equalToSuperview().inset(12)
+//            make.leading.equalToSuperview().inset(8)
+//            make.trailing.equalTo(sendButton.snp.leading).offset(-8)
+//            make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom).inset(8)
+//           // make.height.greaterThanOrEqualTo(18)
+//        }
         
         addSubview(placeholderLabel)
-        placeholderLabel.snp.makeConstraints { make in
-            make.centerY.equalTo(messageInputTextView)
-            make.left.equalTo(messageInputTextView).inset(8)
-        }
+        placeholderLabel.anchor(left: messageInputTextView.leftAnchor, paddingLeft: 4)
+        placeholderLabel.centerY(inView: messageInputTextView)
+//        placeholderLabel.snp.makeConstraints { make in
+//            make.centerY.equalTo(messageInputTextView)
+//            make.left.equalTo(messageInputTextView).inset(8)
+//        }
         
        sendButton.addTarget(self, action: #selector(handleSendMessage), for: .touchUpInside)
         NotificationCenter.default.addObserver(self, selector: #selector(handleTextInputChange), name: UITextView.textDidChangeNotification, object: nil)

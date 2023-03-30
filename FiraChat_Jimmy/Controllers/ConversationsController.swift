@@ -6,16 +6,19 @@
 //
 
 import UIKit
+import SnapKit
 import FirebaseAuth
 
 private let reuseIdentifier = "ConversationCell"
 
 final class ConversationsController: UIViewController {
     
+    
     // MARK: - 프로퍼티
 
     private let tableView = UITableView()
     private var conversations = [Conversation]()
+    private var conversationDictionary = [String: Conversation]()
     
     private let newMassageButton: UIButton = {
         let button = UIButton(type: .system)
@@ -26,7 +29,7 @@ final class ConversationsController: UIViewController {
             make.height.width.equalTo(26)
         }
         button.layer.masksToBounds = true
-        button.addTarget(self, action: #selector(showNewMessage), for: .touchUpInside)
+        
         return button
     }()
     
@@ -37,22 +40,30 @@ final class ConversationsController: UIViewController {
         authenticateUser()
         configureUI()
         fetchConversation()
-
-       
+        newMassageButton.addTarget(self, action: #selector(showNewMessage), for: .touchUpInside)
     }
     
     // MARK: - 메서드
 
     private func fetchConversation() {
-        print("대화불러오기 메서드 실행")
-        Service.fetchConversations { [weak self] conversations in
-            guard let self = self else {return}
-            self.conversations = conversations
-            print("대화: \(self.conversations)")
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
+        print("패치대화 메서드 실행")
+        showLoader(true)
+        Service.fetchConversations { [weak self] conversations, error in
+            guard let self = self else { return }
+            print("패치대화 서버 연동중")
+            if let _ = error {
+                self.showLoader(false)
+                return
+                
             }
-           
+            self.showLoader(false)
+            guard let cv = conversations else {return}
+            cv.forEach { conversation in
+                let message = conversation.message
+                self.conversationDictionary[message.toID] = conversation
+            }
+            self.conversations = Array(self.conversationDictionary.values)
+            self.tableView.reloadData()
         }
     }
     
@@ -64,13 +75,6 @@ final class ConversationsController: UIViewController {
         }
     }
     
-    private func presentLoginScreen() {
-        let vc = LoginViewController()
-        let nav = UINavigationController(rootViewController: vc)
-        nav.modalPresentationStyle = .fullScreen
-        present(nav, animated: false, completion: nil)
-    }
-    
     private func logOut() {
         do {
             try Auth.auth().signOut()
@@ -80,10 +84,19 @@ final class ConversationsController: UIViewController {
         }
     }
     
+    private func presentLoginScreen() {
+        let vc = LoginViewController()
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: false, completion: nil)
+    }
+    
     private func configureUI() {
         view.backgroundColor = .white
-        configureNavigationBar(withTitle: "Messages", prefersLargeTitle: true)
+        configureNavigationBar(withTitle: "Messages", prefersLargeTitles: true)
         configureTableView()
+        
+        
     
         let image = UIImage(systemName: "person.circle.fill")
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(showProfile))
@@ -101,7 +114,7 @@ final class ConversationsController: UIViewController {
     private func configureTableView() {
         tableView.backgroundColor = .white
         tableView.rowHeight = 80
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: reuseIdentifier)
+        tableView.register(ConversationCell.self, forCellReuseIdentifier: reuseIdentifier)
         tableView.tableFooterView = UIView()
         
         tableView.delegate = self
@@ -110,18 +123,22 @@ final class ConversationsController: UIViewController {
         view.addSubview(tableView)
         tableView.frame = view.frame
     }
+    
+    private func showChatcontroller(forUser user: User) {
+        let controller = ChatController(user: user)
+        navigationController?.pushViewController(controller, animated: true)
+    }
     // MARK: - 셀렉터
 
     @objc func showProfile() {
-        let alertController = UIAlertController(title: "로그아웃", message: "로그아웃 하시겠습니까?", preferredStyle: .alert)
-        let okAction = UIAlertAction(title: "확인", style: .default) { [weak self]_ in
-            self?.logOut()
-        }
-        let cancelAction = UIAlertAction(title: "취소", style: .cancel)
-        alertController.addAction(okAction)
-        alertController.addAction(cancelAction)
-        self.present(alertController, animated: true, completion: nil)
+        let controller = ProfileController(style: .insetGrouped)
+        controller.delegate = self
+        let nav = UINavigationController(rootViewController: controller)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true, completion: nil)
     }
+    
+    
     
     @objc func showNewMessage() {
         let controller = NewMessageController()
@@ -142,8 +159,9 @@ extension ConversationsController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
-        cell.textLabel?.text = conversations[indexPath.row].message.text
+        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! ConversationCell
+        cell.conversation = conversations[indexPath.row]
+        
         
         return cell
     }
@@ -153,16 +171,22 @@ extension ConversationsController: UITableViewDataSource {
 
 extension ConversationsController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(indexPath.row)
+        tableView.deselectRow(at: indexPath, animated: true)
+        let user = conversations[indexPath.row].user
+        showChatcontroller(forUser: user)
     }
 }
 
 // MARK: - NewMessageControllerDelegate
 extension ConversationsController: NemessageControllerDelegate {
     func controller(_ controller: NewMessageController, wnatsToStartChatWith user: User) {
-        controller.dismiss(animated: true)
-        let chat = ChatController(user: user)
-        navigationController?.pushViewController(chat, animated: true)
+        dismiss(animated: true)
+        showChatcontroller(forUser: user)
     }
 }
 
+extension ConversationsController: ProfileControllerDelegate {
+    func handleLogout() {
+        logOut()
+    }
+}

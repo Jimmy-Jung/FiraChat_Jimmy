@@ -12,16 +12,15 @@ import FirebaseAuth
 struct Service {
     
     static func fetchUsers(completion: @escaping ([User]) -> Void) {
-        var users: [User] = []
         COLLECION_USERS.getDocuments { snapshot, error in
             if let err = error {
                 print("ERROR: \(err.localizedDescription)")
             }
-            snapshot?.documents.forEach { document in
-                let dictionary = document.data()
-                let user = User(dictionary: dictionary)
-                users.append(user)
-            }
+            guard var users = snapshot?.documents.map({ User(dictionary: $0.data()) }) else {return}
+            
+//            if let i = users.firstIndex(where: { $0.uid == Auth.auth().currentUser?.uid }) {
+//                users.remove(at: i)
+//            }
             completion(users)
         }
     }
@@ -35,27 +34,36 @@ struct Service {
         
     }
     
-    static func fetchConversations(completion: @escaping([Conversation]) -> Void) {
+    static func fetchConversations(completion: @escaping([Conversation]?, Error?) -> Void) {
         var conversations = [Conversation]()
-    
-        guard let uid = Auth.auth().currentUser?.uid else {
-            return}
-        let query = COLLECION_MESSAGES.document(uid).collection(K.recentMessage).order(by: K.timestamp)
         
+        guard let uid = Auth.auth().currentUser?.uid else {
+            completion(nil, FBError.FIRAuthError)
+            return}
+
+        let query = COLLECION_MESSAGES.document(uid).collection(K.recentMessage).order(by: K.timestamp, descending: true)
         query.addSnapshotListener { snapshot, error in
             if let err = error {
                 print("DEBUG: 대화 불러오기 실패 \(err.localizedDescription)")
+                completion(nil, err)
+                return
             }
+            if snapshot?.documents.count == 0 {
+                completion(nil, error)
+                print("DEBUG: 대화 불러오기 실패1 ")
+                return
+            }
+           
             snapshot?.documentChanges.forEach({ change in
-          
+                print("DEBUG: 대화 불러오기 실패2 ")
                 let dictionary = change.document.data()
                 let message = Message(dictionary: dictionary)
                 
                 self.fetchUser(withUid: message.toID) { user in
+                    print("DEBUG: 대화 불러오기 실패3 ")
                     let conversation = Conversation(user: user, message: message)
                     conversations.append(conversation)
-                    print("대화 메세지 \(conversation.message.text)")
-                    completion(conversations)
+                    completion(conversations, nil)
                 }
                 
             })
@@ -91,16 +99,20 @@ struct Service {
         
         let data = [K.text: message,
                     K.fromID: currentUid,
-                    K.fromID: user.uid,
+                    K.toID: user.uid,
                     K.timestamp: Timestamp(date: Date())] as [String: Any] as [String: Any]
         
-        COLLECION_MESSAGES.document(currentUid).collection(user.uid).addDocument(data: data) {_ in 
-            COLLECION_MESSAGES.document(user.uid).collection(currentUid).addDocument(data: data, completion: completion)
+        if currentUid != user.uid {
+            COLLECION_MESSAGES.document(currentUid).collection(user.uid).addDocument(data: data) { _ in
+                COLLECION_MESSAGES.document(user.uid).collection(currentUid).addDocument(data: data, completion: completion)
+                COLLECION_MESSAGES.document(currentUid).collection(K.recentMessage).document(user.uid).setData(data, completion: completion)
+                COLLECION_MESSAGES.document(user.uid).collection(K.recentMessage).document(currentUid).setData(data)
+            }
+        } else {
+            COLLECION_MESSAGES.document(currentUid).collection(user.uid).addDocument(data: data) {_ in
+                COLLECION_MESSAGES.document(currentUid).collection(K.recentMessage).document(user.uid).setData(data, completion: completion)
+            }
             
-            //최근 대화 만들기
-            COLLECION_MESSAGES.document(currentUid).collection(K.recentMessage).document(user.uid).setData(data)
-            
-            COLLECION_MESSAGES.document(user.uid).collection(K.recentMessage).document(currentUid).setData(data)
         }
     }
 }

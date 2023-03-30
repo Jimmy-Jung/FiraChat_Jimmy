@@ -8,8 +8,8 @@
 import Foundation
 import FirebaseFirestore
 
-let COLLECION_MESSAGES = Firestore.firestore().collection("messages")
-let COLLECION_USERS = Firestore.firestore().collection("users")
+let COLLECION_MESSAGES = Firestore.firestore().collection(K.messages)
+let COLLECION_USERS = Firestore.firestore().collection(K.users)
 
 struct K {
     static let recentMessage = "recentMessage"
@@ -17,7 +17,8 @@ struct K {
     static let text = "text"
     static let fromID = "fromID"
     static let toID = "toID"
-    
+    static let users = "users"
+    static let messages = "messages"
    
     
     init() {}

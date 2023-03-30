@@ -14,6 +14,9 @@ class MessageCell: UICollectionViewCell {
         didSet { configure() }
     }
     
+    var bubbleLeftAnchor: NSLayoutConstraint!
+    var bubbleRighAnchor: NSLayoutConstraint!
+    
     private let  profileImageView: UIImageView = {
        let iv = UIImageView()
         iv.contentMode = .scaleAspectFit
@@ -44,7 +47,11 @@ class MessageCell: UICollectionViewCell {
         super.init(frame: frame)
         
         addSubview(profileImageView)
-        profileImageView.layer.cornerRadius = 32 / 2
+        
+//        profileImageView.anchor(left: leftAnchor, bottom: bottomAnchor, paddingLeft: 8, paddingBottom: -4)
+//        profileImageView.setDimensions(height: 32, width: 32)
+//        profileImageView.layer.cornerRadius = 32 / 2
+        
         profileImageView.snp.makeConstraints { make in
             make.bottom.equalToSuperview().inset(9)
             make.left.equalToSuperview().inset(8)
@@ -54,6 +61,13 @@ class MessageCell: UICollectionViewCell {
         
         addSubview(bubbleContainer)
         bubbleContainer.layer.cornerRadius = 12
+//        bubbleContainer.anchor(top: topAnchor)
+//        bubbleContainer.widthAnchor.constraint(lessThanOrEqualToConstant: 250).isActive = true
+//
+//        bubbleLeftAnchor = bubbleContainer.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 12)
+//        bubbleLeftAnchor.isActive = false
+//        bubbleRighAnchor = bubbleContainer.rightAnchor.constraint(equalTo: rightAnchor, constant: -12)
+//        bubbleRighAnchor.isActive = false
         
         bubbleContainer.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview()
@@ -62,7 +76,10 @@ class MessageCell: UICollectionViewCell {
         }
         
         
+        
         bubbleContainer.addSubview(textView)
+//        textView.anchor(top: bubbleContainer.topAnchor, left: bubbleContainer.leftAnchor, bottom: bubbleContainer.bottomAnchor, right: bubbleContainer.rightAnchor, paddingTop: 4, paddingLeft: 12, paddingBottom: 4, paddingRight: 12)
+        
         textView.snp.makeConstraints { make in
             make.edges.equalTo(bubbleContainer).inset(UIEdgeInsets(top: 4, left: 12, bottom: 4, right: 12))
         }
@@ -81,24 +98,26 @@ class MessageCell: UICollectionViewCell {
         bubbleContainer.backgroundColor = viewModel.messageBackgroundColor
         textView.textColor = viewModel.messageTextColor
         textView.text = message.text
-        
-        bubbleContainer.snp.removeConstraints()
+       
+//        bubbleLeftAnchor.isActive = viewModel.leftAnchorActive
+//        bubbleRighAnchor.isActive = viewModel.rightAnchorActive
+//        profileImageView.isHidden = viewModel.shouldHideProfileImage
         
         if message.isFromCurrentUser {
-            self.profileImageView.isHidden = true
-            bubbleContainer.snp.makeConstraints { make in
-                make.top.bottom.equalToSuperview()
-                make.right.equalToSuperview().inset(12)
-                make.width.lessThanOrEqualTo(250)
+                self.profileImageView.isHidden = true
+                bubbleContainer.snp.remakeConstraints { make in
+                    make.top.bottom.equalToSuperview()
+                    make.right.equalToSuperview().inset(12)
+                    make.width.lessThanOrEqualTo(250)
+                }
+            } else {
+                self.profileImageView.isHidden = false
+                bubbleContainer.snp.remakeConstraints { make in
+                    make.top.bottom.equalToSuperview()
+                    make.left.equalTo(profileImageView.snp.right).offset(12)
+                    make.width.lessThanOrEqualTo(250)
+                }
             }
-        } else {
-            self.profileImageView.isHidden = false
-            bubbleContainer.snp.makeConstraints { make in
-                make.top.bottom.equalToSuperview()
-                make.left.equalTo(profileImageView.snp.right).offset(12)
-                make.width.lessThanOrEqualTo(250)
-            }
-        }
         
         profileImageView.sd_setImage(with: viewModel.profileImageUrl)
     }
